@@ -1,22 +1,32 @@
 import { Product, Category } from "../models/Products";
 
-export async function getProductBySlug(){
-
+export async function getProductBySlug(req, res){
+    try {
+        const {slug} = req.query;
+        const product = await Product.find({slug})
+        if(!product){
+            return res.status(404).json({err:"damn g no product here"})
+        }
+        return res.status(200).json(product)
+    } catch (err) {
+        console.error("Error in getProductBySlug:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 }
 
 
+/* TODO: 
+    - populate db for testing
+*/
 
 
-
-
-
-// add sorting
 export async function getProducts(req, res){
     try {
         const {category, maxPrice, minPrice, pageParam, limitParam, sortBy} = req.query;
     
         const page = Number(pageParam) || 1;
         const limit = Number(limitParam) || 20;
+
         const SORT_MAPPING = {
             price_asc:  { price: 1 },
             price_desc: { price: -1 },
@@ -106,6 +116,7 @@ export async function getProducts(req, res){
         pipeline.push({
             $facet: {
                 data: [
+                // sort now if we dont need to do a heavy look up
                 ...(sortBy !== 'price_asc' && sortBy !== 'price_desc' ? [{ $sort: sortOrder }] : []),
                 { $skip: skip },
                 { $limit: limit },
