@@ -1,14 +1,14 @@
-import { Product, Category } from "../models/Products.js";
+import { Product, Category, Variant, Review } from "../models/Products.js";
 
 export async function getProductBySlug(req, res){
     try {
         const {slug} = req.params;
-        const product = await Product.find({slug})
+        const product = await Product.findOne({slug}).lean()
         if(!product){
-            return res.status(404).json({err:"damn g no product here"})
+            return res.status(404).json({error:"Product not found."})
         }
         return res.status(200).json(product)
-    } catch (err) {
+    } catch (error) {
         console.error("Error in getProductBySlug:", error);
         return res.status(500).json({ error: "Internal server error" });
     }
@@ -152,10 +152,67 @@ export async function getProducts(req, res){
     }
 }
 
-export async function createProduct(){
 
+export async function getProductVariants(req, res){
+    try {
+        const {slug} = req.params;
+        const product = await Product.findOne({slug}).lean()
+
+        if(!product){
+            return res.status(404).json({error:"Product not found."})
+        }
+
+        const variants = await Variant.find({product: product._id}).lean()
+        return res.status(200).json(variants)
+    } catch (error) {
+        console.error("Error in getProductVariants:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 }
 
+
+export async function getProductReviews(req, res){
+    try {
+        const {slug} = req.params;
+
+        const { page = 1, limit = 10 } = req.query;
+        
+        const product = await Product.findOne({slug}, '_id').lean()
+        if(!product){
+            return res.status(404).json({error:"Product not found."})
+        }
+        
+        const skip = (Number(page) - 1) * Number(limit);
+
+        const [reviews, total] = await Promise.all([
+            Review.find({ product: product._id })
+                .populate('user', 'display_name')
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(Number(limit))
+                .lean(),
+            Review.countDocuments({ product: product._id })
+        ]);
+
+        return res.status(200).json({
+            reviews,
+            total,
+            page: Number(page),
+            totalPages: Math.ceil(total / Number(limit))
+        });
+    } catch (error) {
+        console.error("Error in getProductReviews:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+
+
+export async function createProduct(req, res){
+    // get the req.body
+    // validate it
+
+}
 
 export async function updateProduct(){
 
@@ -166,10 +223,4 @@ export async function deleteProduct(){
 
 }
 
-export async function getProductVariants(){
 
-}
-
-export async function getProductReviews(){
-
-}
