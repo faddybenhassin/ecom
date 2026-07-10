@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import connectDB from './config/db.js';
 import mongoose from 'mongoose';
 import authRouter from './routes/auth.js'
+import productRouter from './routes/products.js'
 import cors from 'cors';
 import { adminOnly, protect } from './middleware/auth.js';
 
@@ -34,6 +35,7 @@ app.use(session({
 }))
 
 app.use('/auth', authRouter)
+app.use('/', productRouter)
 
 
 app.get('/auth/me',(req,res)=>{

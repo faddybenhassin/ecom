@@ -1,8 +1,8 @@
-import { Product, Category } from "../models/Products";
+import { Product, Category } from "../models/Products.js";
 
 export async function getProductBySlug(req, res){
     try {
-        const {slug} = req.query;
+        const {slug} = req.params;
         const product = await Product.find({slug})
         if(!product){
             return res.status(404).json({err:"damn g no product here"})
@@ -15,9 +15,6 @@ export async function getProductBySlug(req, res){
 }
 
 
-/* TODO: 
-    - populate db for testing
-*/
 
 
 export async function getProducts(req, res){
