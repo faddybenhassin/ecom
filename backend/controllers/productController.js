@@ -209,9 +209,56 @@ export async function getProductReviews(req, res){
 
 
 export async function createProduct(req, res){
-    // get the req.body
-    // validate it
+    try {
+        const { 
+            slug, 
+            name, 
+            description, 
+            brand, 
+            categorySlug, 
+            images, 
+            is_active = true
+        } = req.body;
+        
 
+        if (!slug || !name || !categorySlug) {
+            return res.status(400).json({
+                error: "slug, name, and categorySlug are required.",
+            });
+        }
+
+        const category = await Category.findOne({slug: categorySlug}, '_id').lean();
+
+        if (!category) {
+            return res.status(404).json({
+                error: "Category not found.",
+            });
+        }
+
+        const product = await Product.create({
+            slug,
+            name,
+            description,
+            brand,
+            category: category._id,
+            images,
+            is_active,
+        });
+    
+        return res.status(201).json({
+            message: "Product created successfully.",
+            product,
+        });
+    } catch (error) {
+        if (error.code === 11000) {
+            return res.status(409).json({
+                error: "A product with this slug already exists.",
+            });
+        }
+
+        console.error("Error in createProduct:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 }
 
 export async function updateProduct(){

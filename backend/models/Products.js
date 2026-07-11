@@ -22,8 +22,8 @@ const VariantSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const CategorySchema = new mongoose.Schema({
-  name:      { type: String, required: true },
   slug:      { type: String, required: true, unique: true },
+  name:      { type: String, required: true },
   parent:    { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
   image_url: { type: String },
 }, { timestamps: true });
