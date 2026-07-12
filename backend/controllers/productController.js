@@ -206,7 +206,47 @@ export async function createProduct(req, res){
 }
 
 export async function updateProduct(){
+    try {
+        const {slug} = req.params;
+        const { categorySlug, ...body} = req.body;
 
+
+
+        const allowedFields = ['name', 'description', 'brand', 'images', 'is_active'];
+        const updateFields = {};
+
+        for (const field of allowedFields) {
+            if (body[field] !== undefined) {
+                updateFields[field] = body[field];
+            }
+        }
+
+        if (categorySlug !== undefined) {
+            const category = await Category.findOne({ slug: categorySlug }, '_id').lean();
+            if (!category) {
+                return res.status(404).json({ error: "Category not found." });
+            }
+            updateFields.category = category._id;
+        }
+
+        if (Object.keys(updateFields).length === 0) {
+            return res.status(400).json({ error: "No valid fields to update." });
+        }
+
+        const product = await findOneAndUpdate({slug}, {$set: updateFields}, {new: true, runValidators: true})
+        if(!product){
+            return res.status(404).json({error:"Product not found."})
+        }
+
+        return res.status(200).json({
+            message: "Product updated successfully.",
+            product,
+        });
+        
+    } catch (error) {
+        console.error("Error in createProduct:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 }
 
 
