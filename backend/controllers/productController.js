@@ -205,21 +205,17 @@ export async function createProduct(req, res){
     }
 }
 
-export async function updateProduct(){
+export async function updateProduct(req, res){
     try {
         const {slug} = req.params;
         const { categorySlug, ...body} = req.body;
 
-
-
         const allowedFields = ['name', 'description', 'brand', 'images', 'is_active'];
-        const updateFields = {};
-
-        for (const field of allowedFields) {
-            if (body[field] !== undefined) {
-                updateFields[field] = body[field];
-            }
-        }
+        const updateFields = Object.fromEntries(
+            allowedFields
+                .filter(field => body[field] !== undefined)
+                .map(field => [field, body[field]])
+        );
 
         if (categorySlug !== undefined) {
             const category = await Category.findOne({ slug: categorySlug }, '_id').lean();
@@ -233,7 +229,7 @@ export async function updateProduct(){
             return res.status(400).json({ error: "No valid fields to update." });
         }
 
-        const product = await findOneAndUpdate({slug}, {$set: updateFields}, {new: true, runValidators: true})
+        const product = await Product.findOneAndUpdate({slug}, {$set: updateFields}, {new: true, runValidators: true})
         if(!product){
             return res.status(404).json({error:"Product not found."})
         }
@@ -244,7 +240,7 @@ export async function updateProduct(){
         });
         
     } catch (error) {
-        console.error("Error in createProduct:", error);
+        console.error("Error in updateProduct:", error);
         return res.status(500).json({ error: "Internal server error" });
     }
 }
