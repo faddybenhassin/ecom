@@ -246,8 +246,24 @@ export async function updateProduct(req, res){
 }
 
 
-export async function deleteProduct(){
+export async function deleteProduct(req, res){
+    try {
+        const {slug} = req.params;
+        const product = await Product.findOneAndDelete({slug})
+        if(!product){
+            return res.status(404).json({error:"Product not found."})
+        }
+        
+        await Promise.all([
+            Variant.deleteMany({ product: product._id }),
+            Review.deleteMany({ product: product._id }),
+        ]);
 
+        return res.status(200).json({message: "Product deleted successfully.",})
+    } catch (error) {
+        console.error("Error in deleteProduct:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 }
 
 
