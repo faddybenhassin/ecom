@@ -5,6 +5,9 @@ import connectDB from './config/db.js';
 import mongoose from 'mongoose';
 import authRouter from './routes/auth.js'
 import productRouter from './routes/products.js'
+import variantRouter from './routes/variants.js'
+import categoryRouter from './routes/categories.js'
+import reviewRouter from './routes/reviews.js'
 import cors from 'cors';
 import { adminOnly, protect } from './middleware/auth.js';
 
@@ -36,6 +39,9 @@ app.use(session({
 
 app.use('/auth', authRouter)
 app.use('/', productRouter)
+app.use('/', variantRouter)
+app.use('/', categoryRouter)
+app.use('/', reviewRouter)
 
 
 app.get('/auth/me',(req,res)=>{
