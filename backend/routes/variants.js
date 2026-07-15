@@ -18,7 +18,4 @@ router.patch("/variants/:sku", protect, adminOnly, updateVariant);
 // DELETE /api/variants/:sku        → remove a variant (admin)
 router.delete("/variants/:sku", protect, adminOnly, deleteVariant);
 
-// PATCH  /api/variants/:sku/inventory → update stock for a variant (admin)
-router.patch("/variants/:sku/inventory", protect, adminOnly, updateVariantInventory);
-
 export default router;

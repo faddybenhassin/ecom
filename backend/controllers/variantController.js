@@ -156,7 +156,7 @@ export async function updateVariant(req, res) {
             return res.status(400).json({ error: "No valid fields to update." });
         }
 
-        cObject.assign(existingVariant, updateFields);
+        Object.assign(existingVariant, updateFields);
         await existingVariant.save();
     
         return res.status(200).json({
@@ -170,7 +170,17 @@ export async function updateVariant(req, res) {
 }
 
 export async function deleteVariant(req, res) {
-}
+    try {
+        const { sku } = req.params;
+        const variant = await Variant.findOneAndDelete({sku})
+        if(!variant){
+            return res.status(404).json({error:"Variant not found."})
+        }
 
-export async function updateVariantInventory(req, res) {
+        return res.status(200).json({message: "Variant deleted successfully.",})
+    } catch (error) {
+        console.error("Error in deleteVariant:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+
 }
