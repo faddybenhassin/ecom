@@ -384,3 +384,9 @@ export async function updateUserRole(req, res) {
 
   res.json({ user, message:"role updated"});
 };
+
+
+
+export async function me(req, res) {
+    res.status(200).json(req.session.user);
+}

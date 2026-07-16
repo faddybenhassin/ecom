@@ -44,19 +44,6 @@ app.use('/', categoryRouter)
 app.use('/', reviewRouter)
 
 
-app.get('/auth/me',(req,res)=>{
-  if (!req.session.user) return res.status(401).send('Unauthorized');
-  res.json(req.session.user);
-})
-
-app.get('/hello',protect, adminOnly,(req,res)=>{
-    res.json("hello")
-})
-
-// app.get('/',(req,res)=>{
-//     res.send('<a href="/auth/google">Login with Google</a>');
-// })
-
 app.listen(PORT,()=>{
     console.log(`Server is running on http://localhost:${PORT}`);
 })

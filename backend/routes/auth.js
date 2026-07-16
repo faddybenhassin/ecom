@@ -1,5 +1,5 @@
 import express from 'express'
-import { githubCallback, githubRedirect, googleCallback, googleRedirect, login, logout, register, updateUserRole } from '../controllers/authController.js'
+import { githubCallback, githubRedirect, googleCallback, googleRedirect, login, logout, me, register, updateUserRole } from '../controllers/authController.js'
 import { protect, adminOnly } from '../middleware/auth.js'
 
 
@@ -23,5 +23,7 @@ router.post('/logout', logout)
 
 // promote route
 router.patch("/users/:id/role", protect, adminOnly, updateUserRole);
+// protect might ruin this
+router.get("/me", protect, me);
 
 export default router
