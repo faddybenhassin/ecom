@@ -174,6 +174,14 @@ export async function createProduct(req, res){
             });
         }
 
+
+        if (images !== undefined && !Array.isArray(images)) {
+            return res.status(400).json({
+                error: "images must be an array of URLs.",
+            });
+        }
+
+        
         const category = await Category.findOne({slug: categorySlug}, '_id').lean();
 
         if (!category) {
@@ -183,12 +191,12 @@ export async function createProduct(req, res){
         }
 
         const product = await Product.create({
-            slug,
-            name,
-            description,
-            brand,
+            slug: slug.trim().toLowerCase(),
+            name: name.trim(),
+            description: description?.trim(),
+            brand: brand?.trim(),
             category: category._id,
-            images,
+            images: images ?? [],
             is_active,
         });
     
