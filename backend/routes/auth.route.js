@@ -1,5 +1,5 @@
 import express from 'express'
-import { githubCallback, githubRedirect, googleCallback, googleRedirect, login, logout, me, register, updateUserRole } from '../controllers/authController.js'
+import { githubCallback, githubRedirect, googleCallback, googleRedirect, login, logout, me, register, updateUserRole } from '../controllers/auth.controller.js'
 import { protect, adminOnly } from '../middleware/auth.js'
 
 

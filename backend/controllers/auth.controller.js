@@ -2,7 +2,7 @@ import express from 'express'
 import crypto from 'crypto'
 import oidcConfig from '../config/oidc.js';
 import * as oidc from 'openid-client'
-import { User } from '../models/Users.js';
+import { User } from '../models/user.module.js';
 import bcrypt from 'bcrypt'
 const REDIRECT_URI = 'http://localhost:3000/auth/google/callback';
 const FRONTEND_REDIRECT_URI = 'http://localhost:5173/dashboard';

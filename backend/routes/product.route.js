@@ -7,7 +7,7 @@ import {
   deleteProduct,
   getProductVariants,
   getProductReviews,
-} from "../controllers/productContro.js";
+} from "../controllers/product.controller.js";
 import { protect, adminOnly } from "../middleware/auth.js";
 
 const router = express.Router();

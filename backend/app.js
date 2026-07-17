@@ -3,11 +3,11 @@ import session from 'express-session'
 import dotenv from 'dotenv'
 import connectDB from './config/db.js';
 import mongoose from 'mongoose';
-import authRouter from './routes/auth.js'
-import productRouter from './routes/products.js'
-import variantRouter from './routes/variants.js'
-import categoryRouter from './routes/categories.js'
-import reviewRouter from './routes/reviews.js'
+import authRouter from './routes/auth.route.js'
+import productRouter from './routes/product.route.js'
+import variantRouter from './routes/variant.route.js'
+import categoryRouter from './routes/category.route.js'
+import reviewRouter from './routes/review.route.js'
 import cors from 'cors';
 import { adminOnly, protect } from './middleware/auth.js';
 

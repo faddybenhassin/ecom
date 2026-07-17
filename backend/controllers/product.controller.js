@@ -1,7 +1,7 @@
-import { Product } from "../models/Products.js";
-import { Category } from "../models/Category.js";
-import { Variant } from "../models/Variant.js";
-import { Review } from "../models/Review.js";
+import { Product } from "../models/product.module.js";
+import { Category } from "../models/category.module.js";
+import { Variant } from "../models/variant.module.js";
+import { Review } from "../models/review.module.js";
 
 export async function getProductBySlug(req, res){
     try {

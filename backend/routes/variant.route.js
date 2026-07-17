@@ -4,7 +4,7 @@ import {
   updateVariant,
   deleteVariant,
   updateVariantInventory,
-} from "../controllers/variantController.js";
+} from "../controllers/variant.controller.js";
 import { protect, adminOnly } from "../middleware/auth.js";
 
 const router = express.Router();

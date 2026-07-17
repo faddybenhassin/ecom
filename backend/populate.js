@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import connectDB from './config/db.js';
-import { Product } from './models/Products.js';
-import { Category } from './models/Category.js';
-import { Variant } from './models/Variant.js';
+import { Product } from './models/product.module.js';
+import { Category } from './models/category.module.js';
+import { Variant } from './models/variant.module.js';
 
 dotenv.config();
 

@@ -6,7 +6,7 @@ import {
   updateCategory,
   deleteCategory,
   getCategoryProducts,
-} from "../controllers/categoryController.js";
+} from "../controllers/category.controller.js";
 import { protect, adminOnly } from "../middleware/auth.js";
 
 const router = express.Router();

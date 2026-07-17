@@ -1,5 +1,5 @@
-import { Product } from "../models/Products";
-import { Variant } from "../models/Variant";
+import { Product } from "../models/product.module.js";
+import { Variant } from "../models/variant.module.js";
 
 export async function createVariant(req, res){
     try {
