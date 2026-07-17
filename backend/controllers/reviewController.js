@@ -42,13 +42,93 @@ export async function createReview(req, res) {
         if (error.code === 11000) {
             return res.status(409).json({ error: "You've already reviewed this product" });
         }
-        console.error(error);
-        return res.status(500).json({ error: "Failed to create review" });
+        console.error("Error in createReview:", error);
+        return res.status(500).json({ error: "Internal server error" });
     }
 }
 
 export async function updateReview(req, res) {
+    try {
+        const { reviewId } = req.params;
+        const { rating, title, body } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+            return res.status(400).json({ error: "Invalid review ID" });
+        }
+
+        if (rating !== undefined && rating !== null) {
+            if (typeof rating !== "number" || rating < 1 || rating > 5) {
+                return res.status(400).json({ error: "Rating must be a number between 1 and 5" });
+            }
+        }
+        if (body !== undefined && body.trim().length === 0) {
+            return res.status(400).json({ error: "Body cannot be empty" });
+        }
+        if (body && body.length > 5000) {
+            return res.status(400).json({ error: "Body must be under 5000 characters" });
+        }
+        if (title !== undefined && title.trim().length === 0) {
+            return res.status(400).json({ error: "Title cannot be empty" });
+        }
+        if (title && title.length > 120) {
+            return res.status(400).json({ error: "Title must be under 120 characters" });
+        }
+
+        const updates = Object.fromEntries(
+            Object.entries({ rating, title, body }).filter(([, v]) => v !== undefined)
+        );
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({ error: "No valid fields to update." });
+        }
+
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ error: "Review not found." });
+        }
+
+        // Ownership check
+        if (String(review.user) !== String(req.session.user.id) && req.session.user.role !== "admin") {
+            return res.status(403).json({ error: "Not authorized to edit this review." });
+        }
+
+        Object.assign(review, updates);
+        await review.save({ validateModifiedOnly: true });
+
+        return res.status(200).json({
+            message: "Review updated successfully.",
+            review,
+        });
+    } catch (error) {
+        console.error("Error in updateReview:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 }
 
 export async function deleteReview(req, res) {
+    try {
+        const { reviewId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+            return res.status(400).json({ error: "Invalid review ID" });
+        }
+
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ error: "Review not found." });
+        }
+
+        // Ownership check
+        if (String(review.user) !== String(req.session.user.id) && req.session.user.role !== "admin") {
+            return res.status(403).json({ error: "Not authorized to edit this review." });
+        }
+
+        await review.deleteOne();
+
+        return res.status(200).json({ message: "Review deleted successfully." });
+
+    } catch (error) {
+        console.error("Error in deleteReview:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 }

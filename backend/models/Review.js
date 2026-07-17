@@ -9,4 +9,6 @@ const ReviewSchema = new mongoose.Schema({
   verified_purchase: { type: Boolean, default: false },
 }, { timestamps: true });
 
+ReviewSchema.index({ user: 1, product: 1 }, { unique: true });
+
 export const Review = mongoose.model('Review', ReviewSchema);
