@@ -38,10 +38,10 @@ app.use(session({
 }))
 
 app.use('/auth', authRouter)
-app.use('/', productRouter)
-app.use('/', variantRouter)
-app.use('/', categoryRouter)
-app.use('/', reviewRouter)
+app.use('/api', productRouter)
+app.use('/api', variantRouter)
+app.use('/api', categoryRouter)
+app.use('/api', reviewRouter)
 
 
 app.listen(PORT,()=>{
