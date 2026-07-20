@@ -17,9 +17,6 @@ router.get("/categories", getCategories);
 // GET    /api/categories/:slug     → single category by slug
 router.get("/categories/:slug", getCategoryBySlug);
 
-// GET    /api/categories/:slug/products → products in a category
-router.get("/categories/:slug/products", getCategoryProducts);
-
 // POST   /api/categories           → create category (admin)
 router.post("/categories", protect, adminOnly, createCategory);
 
