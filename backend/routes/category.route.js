@@ -4,8 +4,7 @@ import {
   getCategoryBySlug,
   createCategory,
   updateCategory,
-  deleteCategory,
-  getCategoryProducts,
+  deleteCategory
 } from "../controllers/category.controller.js";
 import { protect, adminOnly } from "../middleware/auth.js";
 

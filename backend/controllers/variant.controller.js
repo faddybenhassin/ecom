@@ -182,5 +182,4 @@ export async function deleteVariant(req, res) {
         console.error("Error in deleteVariant:", error);
         return res.status(500).json({ error: "Internal server error" });
     }
-
 }
