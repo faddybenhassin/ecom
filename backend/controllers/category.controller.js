@@ -87,7 +87,7 @@ export async function createCategory(req, res) {
 
 export async function updateCategory(req, res) {
 }
-//this is wrong
+
 export async function deleteCategory(req, res) {
     try{
         const { slug } = req.params;
@@ -98,8 +98,10 @@ export async function deleteCategory(req, res) {
             return res.status(404).json({error: "Category not found"});
         }
     
-        const childCount = await Category.countDocuments({ parent: category._id})
-    
+        const childCount = await Category.countDocuments({ parent: category._id });
+        const productCount = await Product.countDocuments({ category: category._id });
+        let promotedCount = 0;
+        
         if (childCount > 0) {
             if (req.query.promote === 'true') {
                 const result = await Category.updateMany(
@@ -109,9 +111,15 @@ export async function deleteCategory(req, res) {
                 promotedCount = result.modifiedCount;
             } else {
                 return res.status(400).json({
-                    message: `Cannot delete: ${childCount} subcategor${childCount > 1 ? 'ies' : 'y'} still reference this category`,
+                    error: `Cannot delete: ${childCount} subcategor${childCount > 1 ? 'ies' : 'y'} still reference this category`,
                 });
             }
+        }
+
+        if (productCount > 0) {
+            return res.status(400).json({
+                message: `Cannot delete: ${productCount} product(s) still reference this category`,
+            });
         }
     
         await category.deleteOne();
