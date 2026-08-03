@@ -85,7 +85,57 @@ export async function createCategory(req, res) {
     }
 }
 
+async function wouldCreateCycle(categoryId, newParentId) {
+    let current = await Category.findById(newParentId);
+    while (current) {
+        if (current._id.equals(categoryId)) return true;
+        if (!current.parent) return false;
+        current = await Category.findById(current.parent);
+    }
+    return false;
+}
+
 export async function updateCategory(req, res) {
+    try {
+        const { slug } = req.params;
+        const { name, parent, image_url } = req.body;
+
+        
+        const category = await Category.findOne({slug})
+        if(!category){
+            return res.status(404).json({error: "Category not found"});
+        }
+
+
+        const updateFields = {};
+
+        if (name) updateFields.name = name.trim();
+
+        if (parent) {
+            if (parent === slug) {
+                return res.status(400).json({ error: "A category cannot be its own parent" });
+            }
+
+            const parentCategory = await Category.findOne({ slug: parent})
+            if(!parentCategory){
+                return res.status(404).json({error: "Parent category not found"});
+            }
+
+            if (await wouldCreateCycle(category._id, parentCategory._id)) {
+                return res.status(400).json({ error: "This would create a circular category reference" });
+            }
+            updateFields.parent = parentCategory._id;
+        }
+
+        if (image_url) updateFields.image_url = image_url;
+
+        await category.updateOne(updateFields, { runValidators: true });
+
+        return res.status(200).json({ message: "Category updated successfully" });
+    } catch (error) {
+        console.error("Error in updateCategory:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 }
 
 export async function deleteCategory(req, res) {
