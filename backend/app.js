@@ -43,6 +43,11 @@ app.use('/api', variantRouter)
 app.use('/api', categoryRouter)
 app.use('/api', reviewRouter)
 
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
 
 app.listen(PORT,()=>{
     console.log(`Server is running on http://localhost:${PORT}`);
