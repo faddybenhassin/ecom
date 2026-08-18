@@ -10,28 +10,6 @@ const FRONTEND_REDIRECT_URI = 'http://localhost:5173/dashboard';
 
 
 
-export async function googleRedirect(req, res){
-    const code_verifier = oidc.randomPKCECodeVerifier();
-    const code_challenge = await oidc.calculatePKCECodeChallenge(code_verifier);
-    const state = oidc.randomState();
-
-    req.session.pkce = { code_verifier, state };
-
-    const authorizationUrl = oidc.buildAuthorizationUrl(oidcConfig, {
-        redirect_uri: REDIRECT_URI,
-        scope: 'openid profile email',
-        state,
-        code_challenge,
-        code_challenge_method: 'S256',
-    });
-
-    // Redirect the user to the IdP login screen
-    res.redirect(authorizationUrl.href);
-
-    
-}
-
-
 
 
 async function handleOidcCallback(req, res, provider, {sub, email, name}){
@@ -91,6 +69,31 @@ async function handleOidcCallback(req, res, provider, {sub, email, name}){
 }
 
 
+
+export async function googleRedirect(req, res){
+    const code_verifier = oidc.randomPKCECodeVerifier();
+    const code_challenge = await oidc.calculatePKCECodeChallenge(code_verifier);
+    const state = oidc.randomState();
+
+    req.session.pkce = { code_verifier, state };
+
+    const authorizationUrl = oidc.buildAuthorizationUrl(oidcConfig, {
+        redirect_uri: REDIRECT_URI,
+        scope: 'openid profile email',
+        state,
+        code_challenge,
+        code_challenge_method: 'S256',
+    });
+
+    // Redirect the user to the IdP login screen
+    res.redirect(authorizationUrl.href);
+
+    
+}
+
+
+
+
 export async function googleCallback(req, res){
     const storedPkce = req.session.pkce;
     if (!storedPkce) {
@@ -131,26 +134,7 @@ export async function googleCallback(req, res){
 
 
 
-export function logout(req, res) {
-    req.session.destroy((destroyError) => {
-        if (destroyError) {
-            console.error('Logout failed:', destroyError);
-            return res.status(500).send('Logout failed.');
-        }
-
-        res.clearCookie('connect.sid', { path: '/' });
-        return res.status(200).json({ message: 'Logged out successfully.' });
-    });
-}
-
-
-
-
-
-
-
-
-
+// manual login
 
 export async function login(req, res){
     const {email, password} = req.body;
@@ -255,6 +239,18 @@ export async function register(req,res){
     });
 }
 
+
+export function logout(req, res) {
+    req.session.destroy((destroyError) => {
+        if (destroyError) {
+            console.error('Logout failed:', destroyError);
+            return res.status(500).send('Logout failed.');
+        }
+
+        res.clearCookie('connect.sid', { path: '/' });
+        return res.status(200).json({ message: 'Logged out successfully.' });
+    });
+}
 
 
 
