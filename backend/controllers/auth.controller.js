@@ -161,7 +161,7 @@ export async function login(req, res){
     req.session.user = {
         id: user._id,
         email: user.email,
-        name: user.display_name,
+        name: user.name,
         role: user.role
     };
 
@@ -179,14 +179,14 @@ export async function login(req, res){
         user:{
             id: user._id,
             email: user.email,
-            name: user.display_name,
+            name: user.name,
             role: user.role
         }
     });
 }
 
 export async function register(req,res){
-    const { email, password, displayName } = req.body;
+    const { email, password, name } = req.body;
 
     // 1. Check if the email is already registered using our helper
     const existingUser = await User.findByEmail(email);
@@ -201,7 +201,7 @@ export async function register(req,res){
     // 3. Create and Save the user
     const newUser = new User({
         email: email,
-        display_name: displayName,
+        name: name,
         auth_methods: {
             local: {
             password_hash: hashedPassword
@@ -215,7 +215,7 @@ export async function register(req,res){
     req.session.user = {
         id: newUser._id,
         email: newUser.email,
-        name: newUser.display_name,
+        name: newUser.name,
         role: newUser.role
     };
 
@@ -233,7 +233,7 @@ export async function register(req,res){
         user:{
             id: newUser._id,
             email: newUser.email,
-            name: newUser.display_name,
+            name: newUser.name,
             role: newUser.role
         }
     });

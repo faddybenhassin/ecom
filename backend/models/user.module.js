@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     lowercase: true 
   },
-  display_name: { 
+  name: { 
     type: String, 
     required: true,
     trim: true 
