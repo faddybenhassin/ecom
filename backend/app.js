@@ -8,6 +8,9 @@ import productRouter from './routes/product.route.js'
 import variantRouter from './routes/variant.route.js'
 import categoryRouter from './routes/category.route.js'
 import reviewRouter from './routes/review.route.js'
+import cartRouter from './routes/cart.route.js'
+import orderRouter from './routes/order.route.js'
+
 import cors from 'cors';
 import { adminOnly, protect } from './middleware/auth.js';
 
@@ -42,6 +45,8 @@ app.use('/api', productRouter)
 app.use('/api', variantRouter)
 app.use('/api', categoryRouter)
 app.use('/api', reviewRouter)
+app.use('/api', cartRouter)
+app.use('/api', orderRouter)
 
 app.use((err, req, res, next) => {
   console.error(err);
