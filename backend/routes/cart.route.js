@@ -1,5 +1,15 @@
 import express from 'express'
 
+import {
+    getCart,
+    updateCartItem,
+    removeFromCart,
+    addToCart,
+    clearCart,
+    mergeCart
+} from '../controllers/cart.controller.js'
+
+import { protect, adminOnly } from '../middleware/auth.js';
 
 
 const router = express.Router()
