@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 
 const CartItemSchema = new mongoose.Schema({
-    variantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Variant', required: true },
+    variant: { type: mongoose.Schema.Types.ObjectId, ref: 'Variant', required: true },
     quantity: { type: Number, required: true},
 }, { timestamps: true });
 
