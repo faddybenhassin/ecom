@@ -82,8 +82,11 @@ export async function getProducts(req, res){
 
     return res.status(200).json({
         products,
-        total,
-        totalPages: Math.ceil(total / limit),
+        pagination: {
+            total,
+            page: parseInt(page),
+            pages: Math.ceil(total / limit),
+        }
     });
 }
 

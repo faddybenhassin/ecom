@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 
 const OrderItemSchema = new mongoose.Schema({
-    variantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Variant', required: true },
+    variant: { type: mongoose.Schema.Types.ObjectId, ref: 'Variant', required: true },
     sku: { type: String, required: true },  // Snapshot the SKU for the record
     quantity: { type: Number, required: true },
     snapshotPrice: { type: Number, required: true },  // Price at time of purchase
