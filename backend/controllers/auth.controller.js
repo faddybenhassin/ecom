@@ -30,7 +30,7 @@ async function handleOidcCallback(req, res, provider, {sub, email, name}){
             // the user needs a new account
             user = new User({
                 email: email,
-                display_name: name,
+                name: name,
                 auth_methods: {
                     local: null, // They don't have a local password yet
                     oidc: [{
