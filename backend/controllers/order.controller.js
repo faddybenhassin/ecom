@@ -86,7 +86,18 @@ export async function getOrders(req,res ){
 }
 
 export async function getOrder(req,res ){
+    const userId = req.session.user.id
+    const orderId = req.params.id
 
+    const order = await Order.findOne({userId, _id:orderId})
+        .populate('items.variant', 'name')
+        .lean();
+
+    if (!order) {
+        return res.status(404).json({ error: 'Order not found' });
+    }
+
+    res.json({order});
 }
 
 export async function updateOrderStatus(req,res ){
