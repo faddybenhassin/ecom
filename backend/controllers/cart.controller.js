@@ -139,7 +139,3 @@ export async function clearCart(req,res ){
 
     return res.status(200).json({cart, message: "cart cleared successfully"})
 }
-
-export async function mergeCart(req,res ){
-    
-}

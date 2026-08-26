@@ -30,8 +30,4 @@ router.delete('/cart/:id', protect, removeFromCart);
 // DELETE /api/cart            → clear cart (authenticated)
 router.delete('/cart', protect, clearCart);
 
-// NOTE: is this really necessary?
-// POST /api/cart/merge     → merge (authenticated)
-router.post('/cart/merge', protect, mergeCart)
-
 export default router
