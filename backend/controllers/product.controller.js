@@ -48,7 +48,7 @@ export async function getProducts(req, res){
         default:    { _id: -1 }
     };
     const finalSort = SORT_MAPPING[sortBy] || SORT_MAPPING.default;
-
+    // rewrite this it is too confusing
     const pipeline = [
         { $match: matchConditions },
         { $lookup: { from: 'variants', localField: '_id', foreignField: 'product', as: 'variants' } },

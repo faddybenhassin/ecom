@@ -101,9 +101,48 @@ export async function getOrder(req,res ){
 }
 
 export async function updateOrderStatus(req,res ){
+    const {status} = res.body;
+    const orderId = req.params.id
 
+    const validStatuses = ['pending', 'completed', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+        return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    const order = await Order.findByIdAndUpdate(
+        orderId,
+        { status },
+        { new: true, runValidators: true }
+    )
+
+    if (!order) {
+        return res.status(404).json({ error: 'Order not found' });
+    }
+
+    res.json({ order });
 }
 
-export async function cancelOrder(req,res ){
 
+export async function cancelOrder(req, res) {
+  const userId = req.session.user.id;
+  const orderId = req.params.id;
+
+  const order = await Order.findOne({ userId, _id: orderId });
+
+  if (!order) {
+    return res.status(404).json({ error: 'Order not found' });
+  }
+
+  if (order.status === 'cancelled') {
+    return res.status(400).json({ error: 'Order already cancelled' });
+  }
+
+  if (order.status === 'completed') {
+    return res.status(400).json({ error: 'Cannot cancel completed order' });
+  }
+
+  order.status = 'cancelled';
+  await order.save();
+
+  res.json({ order });
 }
