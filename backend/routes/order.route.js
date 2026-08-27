@@ -12,8 +12,6 @@ import { protect, adminOnly } from '../middleware/auth.js';
 
 const router = express.Router()
 
-// NOTE: checkout is weird now with all the payment stuff do the other stuff then handle this
-
 // POST /api/orders → create order (authenticated)
 router.post('/orders', protect, createOrder);
 
