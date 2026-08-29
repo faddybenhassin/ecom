@@ -16,7 +16,7 @@ describe('Auth Integration Tests', () => {
     });
 
 
-    describe('POST /api/auth/register', async () =>{
+    describe('POST /auth/register', async () =>{
         it('should register new user and return 201', async() => {
             const agent = request.agent(app);
 
@@ -26,7 +26,7 @@ describe('Auth Integration Tests', () => {
                 name: 'Test User'
             }
             const res = await agent
-                            .post('/api/auth/register')
+                            .post('/auth/register')
                             .send(NewUser)
                             .expect(201)
 
@@ -37,7 +37,7 @@ describe('Auth Integration Tests', () => {
                 role: expect.any(String)
             });
 
-            const authRes = await agent.get('/api/auth/me').expect(200);
+            const authRes = await agent.get('/auth/me').expect(200);
             expect(authRes.body.user.email).toBe(NewUser.email);
 
             //check user exists in DB
