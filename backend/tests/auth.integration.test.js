@@ -78,9 +78,34 @@ describe('Auth Integration Tests', () => {
             
         })
 
-        it('should hash password and not expose it')
+        it('should hash password and not expose it', async()=>{
+            const agent = request.agent(app);
+
+            const res = await agent
+                            .post('/api/auth/register')
+                            .send({
+                                email: 'test@example.com',
+                                password: 'testpassword',
+                                name: 'Test User'
+                            });
+
+            expect(res.status).toBe(201);
+
+            // Verify in DB
+            const user = await User.findOne({ email: 'test@example.com' });
+            expect(user).toBeDefined();
+            expect(user.auth_methods.local.password_hash).toBeDefined();
+            expect(user.auth_methods.local.password_hash).not.toBe('testpassword');
+            
+            // Verify hash is valid
+            const isValid = await bcrypt.compare('SecurePass123!', user.auth_methods.local.password_hash);
+            expect(isValid).toBe(true);
+        })
+
         it('should register user with valid credentials')
+
         it('should create user with correct auth_methods structure')
+
         it('should return default role')
 
         it('should reject missing email', async ()=>{
@@ -97,6 +122,7 @@ describe('Auth Integration Tests', () => {
 
             expect(res.status).toBeGreaterThanOrEqual(400);
         })
+
         it('should reject missing password', async ()=>{
             const agent = request.agent(app);
 
@@ -111,6 +137,7 @@ describe('Auth Integration Tests', () => {
 
             expect(res.status).toBeGreaterThanOrEqual(400);
         })
+
         it('should reject missing name', async ()=>{
             const agent = request.agent(app);
 
