@@ -102,11 +102,42 @@ describe('Auth Integration Tests', () => {
             expect(isValid).toBe(true);
         })
 
-        it('should register user with valid credentials')
+        it('should register user with valid credentials',async ()=>{
+            const agent = request.agent(app);
+
+            const res = await agent
+                            .post('/api/auth/register')
+                            .send({
+                                email: 'test@example.com',
+                                password: 'testpassword',
+                                name: 'Test User'
+                            });
+
+            expect(res.status).toBe(201);
+            expect(res.body.message).toContain('successfuly');
+            expect(res.body.user).toHaveProperty('id');
+            expect(res.body.user.email).toBe('test@example.com');
+            expect(res.body.user.name).toBe('John Doe');
+
+        })
 
         it('should create user with correct auth_methods structure')
 
-        it('should return default role')
+        it('should return default role', async()=>{
+            const agent = request.agent(app);
+
+            const res = await agent
+                            .post('/api/auth/register')
+                            .send({
+                                email: 'test@example.com',
+                                password: 'testpassword',
+                                name: 'Test User'
+                            });
+
+            expect(res.status).toBe(201);
+            expect(res.body.user).toHaveProperty('role');
+            expect(res.body.user.role).toBe('user');
+        })
 
         it('should reject missing email', async ()=>{
             const agent = request.agent(app);
