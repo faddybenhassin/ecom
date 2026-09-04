@@ -121,7 +121,25 @@ describe('Auth Integration Tests', () => {
 
         })
 
-        it('should create user with correct auth_methods structure')
+        it('should create user with correct auth_methods structure',async()=>{
+            const agent = request.agent(app);
+
+            const NewUser = {
+                email: 'test@example.com',
+                password: 'testpassword',
+                name: 'Test User'
+            }
+            const res = await agent
+                            .post('/auth/register')
+                            .send(NewUser)
+                            .expect(201)
+
+            const user = await User.findOne({ email: NewUser.email });
+            expect(user.auth_methods).toHaveProperty('local');
+            expect(user.auth_methods).toHaveProperty('oidc');
+            expect(user.auth_methods.local).toHaveProperty('password_hash');
+            expect(Array.isArray(user.auth_methods.oidc)).toBe(true);
+        })
 
         it('should return default role', async()=>{
             const agent = request.agent(app);
